@@ -1,11 +1,16 @@
+import importlib.machinery
+import importlib.util
 import subprocess
 import sys
 import tempfile
 import unittest
 from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-import pull_all  # noqa: E402
+SCRIPT = Path(__file__).resolve().parent.parent / "pull-all"
+_loader = importlib.machinery.SourceFileLoader("pull-all", str(SCRIPT))
+_spec = importlib.util.spec_from_loader("pull-all", _loader)
+pull_all = importlib.util.module_from_spec(_spec)
+_loader.exec_module(pull_all)
 
 
 def sh(cwd, *args):
@@ -115,7 +120,7 @@ class PullAllTest(unittest.TestCase):
         commit(seed, "b"); sh(seed, "push", "-q")
         (self.work / "b" / "a").write_text("dirty")
         p = subprocess.run(
-            [sys.executable, str(Path(pull_all.__file__)), "-j", "2", str(self.work)],
+            [sys.executable, str(SCRIPT), "-j", "2", str(self.work)],
             capture_output=True, text=True,
         )
         self.assertEqual(p.returncode, 0, p.stderr)

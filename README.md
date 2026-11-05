@@ -29,7 +29,7 @@ Notes:
 ## Install
 
 ```
-ln -s ~/src/jarv/pull-all/pull_all.py ~/.local/bin/pull-all
+ln -s ~/src/jarv/pull-all/pull-all ~/.local/bin/pull-all
 ```
 
 ## Tests
